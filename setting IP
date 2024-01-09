@@ -1,0 +1,138 @@
+A. setting ip client windows 7/10
+   1. setting ip address 10.10.0.3 ranges ip host 2-6
+	   gateway 10.10.0.1
+           DNS server 8.8.8.8
+           DNS secondary 8.8.4.4
+    setingan diatas disamakakn dengan IP Address pada ether2-server, 
+    bedanya adalah untuk windows menggunakan host 3-6, karena host 2 untuk server.
+
+
+   2. Setting Mikrotik Winbox
+              ether2-Server di Mikrotik ip address 10.10.0.1/29
+              ether3-LAN di Mikrotik ip address 10.10.0.10/27
+              ether4-Hotspot di Mikrotik ip address 10.10.0.20/25 DHCP SERVER
+
+   3. Setting DHCP Client untuk port ethernet1-Internet
+   4. Setting DNS dan Firewall
+   5. ping google.com pada terminal dan CMD
+
+C.Setting IP statik ubuntu server permanen
+   cek netplan
+    1.apt update
+    2.cd /etc/netplan/
+    3.ls
+   cek versi netplan jika :
+    ubuntu server 20.04
+     00-installer-config.yaml
+    ubuntu
+     50-cloud-init.yaml
+    konfigurasi ip statik
+    ubuntu 20.04
+     sudo nano /etc/netplan/00-installer-config.yaml
+    ubuntu
+     sudo nano /etc/netplan/50-cloud-init.yaml
+
+  Setting IP Statik sementara
+   sudo su
+   ifconfig enp0s3 10.10.1.5/29
+   route add default gw 10.10.1.1
+   
+  Setting DNS 
+  nano /etc/resolv.conf
+  127.0.0.1 diganti 8.8.8.8 dn google
+
+2. network:
+    ethernets:
+        enp0s3:
+            addresses: [192.168.1.2/24] //ip disesuaikan
+            gateway4: 192.168.1.1  //ip disesuaikan
+            nameservers:
+              addresses: [8.8.8.8,8.8.4.4] //dns server menggunakan ip publik
+            dhcp4: no //dhcp dinonaktifkan
+        version: 2
+ 
+
+    untuk ubuntu 20.10  untuk spasi tidak boleh menggunakan tab
+    network:
+      ethernets:
+        enp0s3:
+          dhcp4: false //dhcp dinonaktifkan
+            addresses: 
+            - 192.168.1.2/24 //ip disesuaikan
+            gateway4: 192.168.1.1  //ip disesuaikan
+            nameservers:
+              addresses: 
+              - 8.8.8.8 
+              - 8.8.4.4 //dns server menggunakan ip publik
+            
+
+
+3. sudo netplan apply
+4. sudo apt update
+
+
+Installasi LAMP (Linux, Apache, MySQL, PHP) pada ubuntu server
+
+1. apt install apache2 php php-mysql mariadb-server mariadb-client
+
+  atau menggunakan :
+
+  apt install apache2 php php-mysql mysql-server mysql-client
+  setelah selsai penginstalan, cek web mysql menggunakan ip addres Server 10.10.0.2
+  pastikan muncul tampilan web apache.
+
+2. mysql_secure_installation
+
+3. Jika muncul VALIDATE PASSWORD PLUGIN ....
+   Press y
+   New pasword: @#%123abcd (isikan 8+ karakter kombinasi huruf,angka dankarakter khusus)
+   Re-enter new password: @#%123abcd isikan lg sama seperti yg pertama
+4. Va
+5. Remove anonymous user? press y
+5. Disallow root remotley? press n
+6. Remove test database... press y
+7. Reloading the privilage tables noow?.. press y
+
+Setup MySQL Database untuk Instalasi Wordpress
+1. mysql -u root -p
+2. membuat database 
+
+   CREATE DATABASE wordpress_db;
+
+   SHOW DATABASES;   //untuk menampilkan database
+   DROP DATABASE wordpre_db;  //untuk menghapus database yang sudah dibuat.
+
+3. membuat user
+   
+   CREATE USER 'wp'@'localhost' IDENTIFIED BY 'ukkTKJ2020!!'; //pastikan Queryn OK
+   
+   SELECT User, Host FROM mysql.user;   //menampilkan user yg sudah dibuat.
+   DROP USER 'wp'@'localhost';
+
+4. memberikan akses antara user dengan database
+
+   GRANT ALL PRIVILEGES ON wordpress_db.* TO 'wp'@'localhost'; //pastikan Queryn OK
+
+   FLUSH PRIVILEGES;
+   
+    EXIT
+
+
+Installasi Wordpress
+
+1. wget https://wordpress.org/latest.tar.gz //Download source code wordpress terbaru dengan perintah:
+
+2. tar -xvf latest.tar.gz //Extract filenya dengan perintah:LS
+3. root@ubuntu:~#ls //Kalo kita cek daftar isi direktori kita saat ini maka ada folder "wordpress".
+   latest.tar.gz wordpress
+   root@ubuntu:~#cd wordpress
+   root@ubuntu:~#ls
+
+3. cp * /var/www/html/ -R //Copy isi folder wordpress ke direktori web server (/var/www/html).
+
+4. chown www-data:www-data /var/www/html -R //Ubah owner-nya menjadi www-data:www-data dan ubah permission-nya menjadi rwx-rx-rx (755).
+   
+5. chmod 755 /var/www/html -R
+6. rm /var/www/html/index.html //agar tampilan apache langsung masuk ke wordpress.
+7. Sekarang kita lanjut ke proses installasi melalui GUI (web).
+
