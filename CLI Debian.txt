@@ -1,0 +1,43 @@
+---------------Command Line Debian-------------------------
+
+.........Cek IP...........
+ip a
+ip addr
+
+.........Konfigurasi IP Dinamis..............
+nano /etc/network/interfaces
+
+.........Isi dengan :........................
+auto enp0s3
+iface enp0s3 inet dhcp
+atau.....
+iface nep0s3 inet dhcp
+
+.........Konfigurasi IP Statik...............
+
+Isi dengan :
+
+auto enp0s3
+iface enp0s3 inet static
+    address 10.100.69.18/27
+    gateway 10.100.69.1
+
+.........Konfigurasi DNS Server..............
+
+/etc/resolv.conf
+
+Isi dengan :
+
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
+.........Konfigurasi Restart networking......
+
+/etc/init.d/networking restart 
+
+.........Konfigurasi Reeboot.................
+systemctl reboot
+
+..............Menjadwalkan poweroff..........
+Contoh berikut akan menjadwalkan reboot sistem pada 10 pagi:
+systemctl poweroff
